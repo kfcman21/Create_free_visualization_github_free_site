@@ -3,555 +3,376 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 문서 시각화 & 웹페이지 제작: 제미나이 젬 & GitHub Pages 활용 가이드</title>
+    <title>AI 문서 시각화 & 웹페이지 제작 가이드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/subsets/Paperlogy-dynamic-subset.css" type="text/css"/>
     <style>
         body {
-            font-family: "Paperlogy", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f2f5; /* Professional Blue Background */
-            color: #172b4d; /* Professional Blue Text */
-            line-height: 1.6;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            background-color: #ffffff;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            display: flex;
-            border-radius: 12px;
-            overflow: hidden;
-            margin: 20px;
-        }
-        .sidebar {
-            width: 280px;
-            background-color: #0052cc; /* Dark Blue */
-            color: white;
-            padding: 30px 20px;
-            flex-shrink: 0;
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            overflow-y: auto;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .sidebar h1 {
-            font-size: 1.8em;
-            margin-bottom: 30px;
-            font-weight: 700;
-            text-align: center;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-            padding-bottom: 15px;
-        }
-        .sidebar nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .sidebar nav ul li {
-            margin-bottom: 10px;
-        }
-        .sidebar nav ul li a {
-            display: block;
-            padding: 12px 15px;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            font-size: 1.05em;
-        }
-        .sidebar nav ul li a:hover,
-        .sidebar nav ul li a.active {
-            background-color: #0040a3; /* Darker blue on hover/active */
-            transform: translateX(5px);
-        }
-        .main-content {
-            flex-grow: 1;
-            padding: 40px;
-            overflow-y: auto;
-        }
-        section {
-            margin-bottom: 60px;
-            padding-bottom: 30px;
-            border-bottom: 1px solid #e0e6ed;
-        }
-        section:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-        h2 {
-            font-size: 2.2em;
-            color: #0052cc; /* Dark Blue */
-            margin-bottom: 25px;
-            border-left: 5px solid #0052cc;
-            padding-left: 15px;
-            line-height: 1.3;
-        }
-        h3 {
-            font-size: 1.6em;
-            color: #172b4d; /* Professional Blue Text */
-            margin-top: 30px;
-            margin-bottom: 15px;
-            border-bottom: 1px dashed #e0e6ed;
-            padding-bottom: 8px;
-        }
-        p {
-            margin-bottom: 1em;
-            font-size: 1em;
-        }
-        ul {
-            list-style: disc;
-            margin-left: 25px;
-            margin-bottom: 1em;
-        }
-        ol {
-            list-style: decimal;
-            margin-left: 25px;
-            margin-bottom: 1em;
-        }
-        li {
-            margin-bottom: 0.5em;
-        }
-        .highlight {
-            background-color: #e6f2ff; /* Light blue highlight */
-            padding: 15px;
-            border-left: 4px solid #0052cc;
-            margin: 20px 0;
-            font-weight: 600;
-            font-size: 1.05em;
-        }
-        .warning {
-            background-color: #fff0f0; /* Light red for warnings */
-            padding: 15px;
-            border-left: 4px solid #cc0000;
-            margin: 20px 0;
-            font-weight: 600;
-            color: #cc0000;
-        }
-        .code-block {
-            background-color: #f4f7f6;
-            border: 1px solid #e0e6ed;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px 0;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 0.9em;
-            overflow-x: auto;
-            white-space: pre-wrap; /* Ensures long lines wrap */
-            word-wrap: break-word; /* Ensures long words break */
+            font-family: "Paperlogy", -apple-system, BlinkMacSystemFont, "Segoe UI",Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            background-color: #f8f7f4; /* Vibrant Creative Background */
+            color: #1f2937; /* Vibrant Creative Text */
         }
         .chart-container {
             position: relative;
-            height: 300px; /* Fixed height for charts */
+            margin: auto;
+            height: 45vh;
             width: 100%;
-            margin-top: 20px;
-            background-color: #f8fafc;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            max-width: 900px;
+            max-height: 450px;
         }
-        .slide-title {
-            font-size: 2.5em;
-            font-weight: 800;
-            color: #0052cc;
-            margin-bottom: 15px;
+        .kpi-card {
+            background: linear-gradient(145deg, #f3e8ff, #e0cffc); /* Lighter purple/pink gradient */
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(138, 43, 226, 0.1); /* Vibrant Creative Primary shadow */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .slide-subtitle {
-            font-size: 1.5em;
-            font-weight: 600;
-            color: #172b4d;
-            margin-bottom: 30px;
+        .kpi-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(138, 43, 226, 0.15); /* Vibrant Creative Primary shadow */
         }
-        .slide-content {
-            background-color: #fbfdff;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #8A2BE2, #FF1493); /* Vibrant Creative Primary/Accent */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        /* Mobile adjustments */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-                margin: 0;
-                border-radius: 0;
-            }
-            .sidebar {
-                position: relative;
-                width: 100%;
-                height: auto;
-                padding: 20px 15px;
-                box-shadow: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            }
-            .main-content {
-                padding: 20px 15px;
-            }
-            h2 {
-                font-size: 1.8em;
-            }
-            h3 {
-                font-size: 1.4em;
-            }
+        .section-subtitle {
+            font-size: 1.25rem;
+            color: #4b5563; /* Slightly darker text for subtitle */
+            max-width: 800px;
+            margin: 0 auto 2.5rem auto;
+        }
+        .content-card {
+             background-color: #f9fafb; /* Light gray background for content cards */
+             border: 1px solid #e5e7eb; /* Subtle border */
+             border-radius: 1rem;
+             padding: 1.5rem;
+        }
+        /* New style for outlook accordion buttons */
+        .outlook-card button {
+            background-color: #ffffff; /* White background for buttons */
+            color: #8A2BE2; /* Vibrant Creative Primary for text */
+            border: 1px solid #e5e7eb; /* Subtle border */
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 0.5rem;
+        }
+        .outlook-card button:hover {
+            background-color: #f3e8ff; /* Lighter purple on hover */
+            color: #8A2BE2;
+        }
+        .outlook-card .outlook-content {
+            background-color: #fdfbff; /* Very light purple for content */
+            border: 1px solid #f3e8ff; /* Lighter purple border */
+            border-radius: 0.75rem;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <aside class="sidebar">
-            <h1>AI 문서 시각화 & 웹페이지 제작</h1>
-            <nav>
-                <ul>
-                    <li><a href="#welcome" class="nav-link active">1. 환영합니다!</a></li>
-                    <li><a href="#why-ai-viz" class="nav-link">2. 왜 AI 시각화인가요?</a></li>
-                    <li><a href="#ai-tool-limits" class="nav-link">3. 기존 도구의 한계</a></li>
-                    <li><a href="#gemini-solution" class="nav-link">4. 젬 지침이 최적인 이유</a></li>
-                    <li><a href="#gem-types" class="nav-link">5. 젬 지침: 자유형 vs 고정형</a></li>
-                    <li><a href="#fixed-gem" class="nav-link">6. '고정형' 젬 지침</a></li>
-                    <li><a href="#flexible-gem" class="nav-link">7. '자유형' 젬 지침</a></li>
-                    <li><a href="#viz-types" class="nav-link">8. 시각화 자료 종류</a></li>
-                    <li><a href="#gem-usage1" class="nav-link">9. 젬 지침 사용법 (설치)</a></li>
-                    <li><a href="#gem-usage2" class="nav-link">10. 젬 지침 사용법 (실행)</a></li>
-                    <li><a href="#github-pages-intro" class="nav-link">11. GitHub Pages 소개</a></li>
-                    <li><a href="#github-pages-who" class="nav-link">12. GitHub Pages 권한</a></li>
-                    <li><a href="#github-pages-create1" class="nav-link">13. GitHub Pages (1단계)</a></li>
-                    <li><a href="#github-pages-create2" class="nav-link">14. GitHub Pages (2단계)</a></li>
-                    <li><a href="#github-pages-create3" class="nav-link">15. GitHub Pages (3단계)</a></li>
-                    <li><a href="#github-pages-create4" class="nav-link">16. GitHub Pages (4단계)</a></li>
-                    <li><a href="#github-pages-design1" class="nav-link">17. GitHub Pages 디자인 (1)</a></li>
-                    <li><a href="#github-pages-design2" class="nav-link">18. GitHub Pages 디자인 (2)</a></li>
-                    <li><a href="#github-pages-features" class="nav-link">19. GitHub Pages 추가 기능</a></li>
-                    <li><a href="#conclusion" class="nav-link">20. 결론</a></li>
-                </ul>
-            </nav>
-        </aside>
-        <main class="main-content">
-            <section id="welcome">
-                <p class="slide-title">🚀 AI 문서 시각화 & 웹페이지 제작: 제미나이 젬 & GitHub Pages 활용 가이드</p>
-                <p class="slide-subtitle">(초등교사 대상 연수 자료)</p>
-                <h2>1. 환영합니다!</h2>
-                <p>안녕하세요, 선생님들!</p>
-                <p>이 연수에서는 GitHub Pages를 활용해 나만의 무료 웹사이트를 만들고, 제미나이(Gemini) 젬 지침을 이용해 전문적인 시각화 자료를 무료로 만드는 방법을 아주 쉽게 알려드릴게요. 코딩을 전혀 몰라도 괜찮아요! 지금부터 쉽고 빠르게 시작해봅시다!</p>
-            </section>
+<body class="antialiased">
 
-            <section id="why-ai-viz">
-                <h2>2. 왜 지금 AI 기반 문서 시각화가 중요한가요?</h2>
-                <ul>
-                    <li><strong>방대한 데이터의 효율적 이해:</strong> 복잡한 데이터를 시각화하면 한눈에 파악할 수 있어, 늘어나는 정보 속에서 핵심을 빠르게 잡을 수 있습니다.</li>
-                    <li><strong>비전문가의 접근성 향상:</strong> 디자이너나 분석 전문가가 아니어도 AI의 도움으로 누구나 쉽게 전문적인 결과물을 만들 수 있게 되었어요.</li>
-                    <li><strong>효과적인 커뮤니케이션:</strong> 복잡한 내용을 시각적으로 보여주는 것이 말로 설명하는 것보다 훨씬 효과적입니다. 특히 원격 근무 환경에서 더욱 중요하죠.</li>
-                    <li><strong>다양한 분야 활용 확산:</strong> 교육을 포함한 금융, 비즈니스 등 모든 분야에서 데이터 시각화의 필요성이 급증하고 있습니다.</li>
-                    <li><strong>AI 도구의 발전:</strong> 복잡한 소프트웨어를 배울 필요 없이 자연어로 명령만 하면 고품질 시각화 자료를 손쉽게 생성할 수 있습니다.</li>
-                </ul>
-            </section>
+    <header class="bg-gray-50 py-20 text-center">
+        <div class="container mx-auto px-6">
+            <h1 class="text-5xl md:text-7xl font-black text-gray-900 leading-tight">AI 문서 시각화 & 웹페이지 제작 가이드</h1>
+            <p class="text-xl text-gray-600 mt-4 max-w-3xl mx-auto">초등교사 대상 연수: 코딩 없이 만드는 전문가급 웹 콘텐츠!</p>
+        </div>
+    </header>
 
-            <section id="ai-tool-limits">
-                <h2>3. 기존 AI 시각화 도구의 한계</h2>
-                <p>클로드 3.7 소넷, 젠스파크(ZenSpark)와 같은 AI 도구들은 문서 시각화 기능을 놀랍게 발전시켰습니다.</p>
-                <p>젠스파크는 AI 슬라이드 생성, 마인드맵, 인포그래픽, AI 시트 및 데이터 시각화 등 탁월한 기능을 제공합니다.</p>
-                <div class="warning">
-                    ⚠️ 하지만 여기서 큰 문제가 있습니다! 이러한 훌륭한 도구들 대부분이 '크레딧(Credit)'이라는 비용을 사용해야 하는 치명적인 단점을 가지고 있습니다. 아무리 좋은 기능이라도 계속 비용이 들면 부담스러울 수밖에 없죠.
+    <main class="container mx-auto px-6 py-16">
+
+        <section id="economic" class="text-center mb-24">
+            <h2 class="section-title">왜 지금 AI 기반 문서 시각화가 중요한가요?</h2>
+            <p class="section-subtitle">복잡한 정보 속에서 핵심을 빠르게 파악하고, 비전문가도 쉽게 전문적인 결과물을 만들며, 효과적인 커뮤니케이션을 가능하게 합니다.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                <div class="kpi-card">
+                    <h3 class="text-xl font-bold text-purple-800">효율적 이해</h3>
+                    <p class="text-3xl font-extrabold text-gray-900 mt-2">방대한 데이터 한눈에 파악</p>
                 </div>
-            </section>
-
-            <section id="gemini-solution">
-                <h2>4. 제미나이 '젬 지침'이 최적의 해결책인 이유</h2>
-                <p>이러한 크레딧 소모 문제를 완벽하게 해결할 수 있는 무료 대안이 바로 <strong>제미나이의 '젬 지침'</strong>입니다.</p>
-                <ul>
-                    <li><strong>무료 활용:</strong> 크레딧 소모 없이 젠스파크 수준의 고품질 시각화 자료를 만들 수 있습니다.</li>
-                    <li><strong>방대한 HTML 소스 처리:</strong> 제미나이는 무료 플랜에서도 많은 HTML 소스를 처리할 수 있는 컨텍스트 용량을 지원합니다. (시각화는 HTML 구현이 핵심)</li>
-                    <li><strong>최신 AI 모델 활용:</strong> 항상 최신 AI 모델을 사용할 수 있어 더 나은 결과물을 기대할 수 있습니다.</li>
-                    <li><strong>쉬운 사용법:</strong> 복잡한 소프트웨어를 배울 필요 없이 자연어로 명령만 하면 전문가급 시각화 자료 생성이 가능합니다.</li>
-                </ul>
-            </section>
-
-            <section id="gem-types">
-                <h2>5. '젬 지침'의 두 가지 유형: 자유형 vs 고정형 (개념)</h2>
-                <p>젬 지침은 <strong>'콘텐츠 시각화 고정형'</strong>과 '콘텐츠 시각화 자유형' 두 가지가 있습니다.</p>
-                <p>두 지침은 사용자 콘텐츠의 웹 시각화라는 동일한 목표를 가지고 있지만, 그 철학과 작동 방식, 결과물의 특성에서 근본적인 차이를 보입니다.</p>
-                <div class="highlight">
-                    💡 알아두세요! 자유형: 마치 건축가나 엔지니어와 같습니다. 콘텐츠에 맞춰 새로운 구조를 동적으로 조립하는 방식이에요 (템플릿 없음).<br>
-                    고정형: 인테리어 디자이너나 출판 편집자와 가깝습니다. 이미 검증된 템플릿을 먼저 선택하고 콘텐츠를 그 틀에 채워 넣는 방식으로 작동해요 (총 3개의 템플릿 포함).
+                <div class="kpi-card">
+                    <h3 class="text-xl font-bold text-purple-800">접근성 향상</h3>
+                    <p class="text-3xl font-extrabold text-gray-900 mt-2">비전문가도 전문적 결과물</p>
                 </div>
-            </section>
-
-            <section id="fixed-gem">
-                <h2>6. '고정형' 젬 지침 상세</h2>
-                <ul>
-                    <li><strong>역할:</strong> 인테리어 디자이너나 출판 편집자</li>
-                    <li><strong>템플릿 기반:</strong> 이미 검증된 견본, 즉 템플릿을 먼저 선택하고 콘텐츠를 그 틀에 맞게 재구성하고 채워 넣습니다. 총 3개의 템플릿(인터랙티브 대시보드, 비주얼 인포그래픽 보고서, 원페이지 요약 보고서)을 포함합니다.</li>
-                    <li><strong>콘텐츠 처리:</strong> 소스에서 필요한 텍스트와 데이터를 추출하여 템플릿에 고정된 공간에 맞추기 위해 텍스트를 공격적으로 요약하고 재가공합니다.</li>
-                    <li><strong>결과물 특징:</strong> 정형화된 레이아웃을 채택합니다. 디자인적 완성도나 레이아웃 안정성이 뛰어나고, 결과물의 품질과 형태가 항상 보장되어 안정적입니다.</li>
-                    <li><strong>단점:</strong> 고정된 틀에 콘텐츠를 맞추는 과정에서 일부 정보가 요약되거나 누락될 수 있습니다.</li>
-                </ul>
-            </section>
-
-            <section id="flexible-gem">
-                <h2>7. '자유형' 젬 지침 상세</h2>
-                <ul>
-                    <li><strong>역할:</strong> 건축가나 엔지니어</li>
-                    <li><strong>템플릿 없음:</strong> 템플릿이 없습니다.</li>
-                    <li><strong>콘텐츠 처리:</strong> 콘텐츠를 의미 단위로 분석하여 모든 서술형 문장을 보고서 스타일의 개조식으로 변환합니다.</li>
-                    <li><strong>결과물 특징:</strong> 매번 다른 형식의 대시보드가 생성될 수 있습니다. 콘텐츠의 양과 구조에 따라 컴포넌트의 수와 배치가 달라져서 결과물의 최종 형태가 가변적입니다. 가장 논리적인 형태로 표현되며, 콘텐츠의 양이나 복잡도에 따라 자연스럽게 확장되거나 축소되는 특징이 있습니다.</li>
-                </ul>
-            </section>
-
-            <section id="viz-types">
-                <h2>8. 젬 지침으로 만들 수 있는 시각화 자료 종류</h2>
-                <p>제미나이 젬 지침을 활용하면 다음 세 가지 형태의 시각화 자료를 만들 수 있습니다.</p>
-                <h3>인터랙티브 대시보드</h3>
-                <p>정보를 한눈에 볼 수 있는 웹 페이지 형태의 자료입니다.</p>
-                <ul>
-                    <li><strong>자유형:</strong> 매번 다른 형식의 대시보드가 생성됩니다.</li>
-                    <li><strong>고정형:</strong> 웹페이지 형태의 정형화된 대시보드 레이아웃을 채택합니다.</li>
-                </ul>
-                <h3>비주얼 인포그래픽 보고서</h3>
-                <p>그림과 핵심 내용을 강조한 시각적인 보고서입니다.</p>
-                <ul>
-                    <li><strong>자유형:</strong> 각 섹션이 슬라이드처럼 구성되고, 아이콘/차트와 핵심 포인트가 블릿으로 정리됩니다.</li>
-                    <li><strong>고정형:</strong> 검증된 템플릿 기반이므로 디자인 완성도와 레이아웃 안정성이 뛰어납니다.</li>
-                </ul>
-                <h3>원페이지 요약 보고서</h3>
-                <p>핵심 내용만 간결하게 정리한 한 페이지짜리 보고서입니다.</p>
-                <ul>
-                    <li><strong>자유형:</strong> 콘텐츠 양에 따라 유연하게 확장/축소되며 논리적인 형태로 표현됩니다.</li>
-                    <li><strong>고정형:</strong> 결과물의 품질과 형태가 항상 보장되어 안정적이지만, 일부 정보가 요약되거나 누락될 수 있습니다.</li>
-                </ul>
-            </section>
-
-            <section id="gem-usage1">
-                <h2>9. 젬 지침 사용법 (1/2) - 다운로드 및 설치</h2>
-                <h3>지침 다운로드:</h3>
-                <p>소스에 언급된 블로그 주소(영상 설명란과 고정 댓글 참고)에서 '젬 지침'을 다운로드하고 압축을 푸세요.</p>
-                <h3>젬 등록 및 설치:</h3>
-                <ul>
-                    <li><strong>고정형 설치:</strong> 젬 이름을 '고정형' 등으로 입력한 후, 다운받은 '콘텐츠고정형' 지침을 붙여 넣고, 함께 있는 3가지 템플릿도 추가합니다.</li>
-                    <li><strong>자유형 설치:</strong> 이름을 입력하고 '콘텐츠 자유형' 지침을 열어 내용을 붙여 넣기 합니다.</li>
-                </ul>
-                <div class="warning">
-                    ⚠️ <strong>주의:</strong> 젬 자체적인 문제로 이전 템플릿이 포함되어 있다면 반드시 삭제해야 합니다.
+                 <div class="kpi-card">
+                    <h3 class="text-xl font-bold text-purple-800">커뮤니케이션 강화</h3>
+                    <p class="text-3xl font-extrabold text-gray-900 mt-2">복잡한 내용 시각적 전달</p>
                 </div>
-            </section>
+            </div>
 
-            <section id="gem-usage2">
-                <h2>10. 젬 지침 사용법 (2/2) - 실행 및 유의사항</h2>
-                <h3>젬 실행:</h3>
-                <p>제미나이에서 해당 젬을 실행하고 '시작' 또는 '고'를 입력한 다음, 원하는 시각화 종류의 번호를 선택하세요. 시각화할 텍스트, 문서, URL 등을 입력하면 됩니다.</p>
-                <h3>유의사항:</h3>
-                <ul>
-                    <li>젬 지침이 매우 정교하게 설계되었음에도 불구하고, 인간 언어와 맥락의 본질적 모호성 및 각 젬 페르소나의 구조적 한계로 인해 매번 완벽한 구조의 시각화 자료가 나오는 것은 불가능합니다. (모든 AI의 공통적인 한계)</li>
-                    <li>원페이지 요약 보고서의 경우, 소스 내용의 분량에 따라 콘텐츠가 잘리는 문제가 발생할 수 있습니다. 현재는 젬 자체적인 문제이며, 이 경우 직접 코드를 편집하여 조정해야 합니다.</li>
-                </ul>
-            </section>
-
-            <section id="github-pages-intro">
-                <h2>11. 무료 웹사이트 제작: GitHub Pages 소개</h2>
-                <p>GitHub Pages는 깃허브에서 무료로 제공하는 웹 호스팅 서비스입니다.</p>
-                <p>여러분이 만든 웹사이트 파일을 인터넷에 올려 다른 사람들이 볼 수 있도록 해주는 서비스라고 생각하시면 돼요.</p>
-                <ul>
-                    <li>코드를 업로드하면 자동으로 정적 웹사이트를 생성할 수 있습니다.</li>
-                    <li>개인 블로그, 포트폴리오, 간단한 프로젝트 홈페이지 등을 만들 때 아주 유용합니다.</li>
-                    <li>코딩을 잘 몰라도 시작할 수 있습니다.</li>
-                </ul>
-            </section>
-
-            <section id="github-pages-who">
-                <h2>12. GitHub Pages 누가 사용할 수 있나요? (권한)</h2>
-                <p>GitHub Pages는 다음과 같은 리포지토리에서 사용할 수 있습니다:</p>
-                <ul>
-                    <li>조직의 GitHub Free 계정의 퍼블릭(Public) 리포지토리</li>
-                    <li>GitHub Pro, GitHub Team, GitHub Enterprise Cloud 및 GitHub Enterprise Server 계정의 퍼블릭 및 프라이빗(Private) 리포지토리</li>
-                </ul>
-                <div class="warning">
-                    ⚠️ <strong>주의할 점:</strong> 사이트의 리포지토리가 프라이빗이더라도, GitHub Pages 사이트는 인터넷에서 퍼블릭으로 사용할 수 있습니다. 따라서 리포지토리에 중요한 데이터가 있는 경우, 게시하기 전에 데이터를 제거하는 것이 좋습니다.
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <div class="lg:col-span-3 content-card p-6">
+                    <h3 class="text-2xl font-bold mb-4">AI 시각화 도구 발전 추이 (예시)</h3>
+                    <p class="text-gray-600 mb-6">복잡한 소프트웨어 없이 자연어 명령만으로 고품질 시각화 자료를 손쉽게 생성할 수 있게 되면서 활용도가 급증하고 있습니다.</p>
+                    <div class="chart-container"><canvas id="albumExportsChart"></canvas></div>
                 </div>
-            </section>
-
-            <section id="github-pages-create1">
-                <h2>13. GitHub Pages 웹사이트 만들기 (준비물 및 1단계)</h2>
-                <h3>준비물:</h3>
-                <ul>
-                    <li>깃허브(GitHub) 계정</li>
-                    <li>아주 간단한 HTML 파일 (이것도 제가 알려드릴게요!)</li>
-                </ul>
-                <h3>만드는 4단계:</h3>
-                <p><strong>1단계: 새로운 저장소(Repository) 만들기:</strong></p>
-                <ol>
-                    <li>깃허브에 로그인한 후, 새로운 저장소를 만드세요.</li>
-                    <li>저장소 이름은 여러분의 깃허브 사용자 이름 + .github.io 형식으로 지어주세요 (예: yourusername.github.io). 이렇게 해야 사용자 페이지가 됩니다.</li>
-                    <li>Public으로 설정하고 Create Repository를 클릭하세요.</li>
-                    <li>(선택) README.md 파일도 추가해서 저장소를 만드세요.</li>
-                </ol>
-            </section>
-
-            <section id="github-pages-create2">
-                <h2>14. GitHub Pages 웹사이트 만들기 (2단계)</h2>
-                <p><strong>2단계: HTML 파일 업로드하기:</strong></p>
-                <ol>
-                    <li>방금 만든 저장소로 들어가서 Add file > Upload files를 클릭하세요.</li>
-                    <li>index.html이라는 이름의 파일을 만들거나 업로드해야 해요. 이 파일이 웹사이트의 첫 화면이 됩니다.</li>
-                    <li>아래 HTML 코드를 그대로 복사해서 index.html 파일에 넣어보세요:</li>
-                </ol>
-                <div class="code-block">
-                    &lt;!DOCTYPE html&gt;<br>
-                    &lt;html lang=&quot;en&quot;&gt;<br>
-                    &lt;head&gt;<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;meta charset=&quot;UTF-8&quot;&gt;<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;나의 멋진 페이지&lt;/title&gt;<br>
-                    &lt;/head&gt;<br>
-                    &lt;body&gt;<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;환영합니다!&lt;/h1&gt;<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;이것은 GitHub Pages로 만든 저의 첫 웹사이트입니다.&lt;/p&gt;<br>
-                    &lt;/body&gt;<br>
-                    &lt;/html&gt;
+                <div class="lg:col-span-2 content-card p-6">
+                    <h3 class="text-2xl font-bold mb-4">기존 AI 시각화 도구의 주요 한계 (예시)</h3>
+                    <p class="text-gray-600 mb-6">대부분의 AI 시각화 도구들은 '크레딧'이라는 비용을 소모해야 하는 치명적인 단점을 가지고 있습니다.</p>
+                    <div class="chart-container"><canvas id="revenueSourceChart"></canvas></div>
                 </div>
-                <p>파일을 저장(커밋)하면 됩니다.</p>
-            </section>
-
-            <section id="github-pages-create3">
-                <h2>15. GitHub Pages 웹사이트 만들기 (3단계)</h2>
-                <p><strong>3단계: GitHub Pages 활성화하기:</strong></p>
-                <ol>
-                    <li>저장소 메인 화면에서 Settings (설정) 탭으로 이동하세요.</li>
-                    <li>왼쪽 메뉴에서 Pages를 클릭하세요.</li>
-                    <li>"Build and deployment" 섹션의 "Source"에서 <strong>Deploy from a branch (브랜치에서 배포)</strong>를 선택하세요.</li>
-                    <li>"Branch"에서 main 브랜치를 선택하고 Save (저장) 버튼을 누르세요.</li>
-                </ol>
-            </section>
-
-            <section id="github-pages-create4">
-                <h2>16. GitHub Pages 웹사이트 만들기 (4단계 및 팁)</h2>
-                <p><strong>4단계: 결과 확인하기:</strong></p>
-                <ol>
-                    <li>몇 초에서 몇 분 후 (최대 10분 정도 걸릴 수 있어요), Pages 설정 화면에 <strong>여러분의 웹사이트 주소 (URL)</strong>가 나타납니다.</li>
-                    <li>이 URL로 접속하면 "환영합니다!" 문구가 있는 여러분만의 무료 웹사이트를 확인할 수 있습니다.</li>
-                </ol>
-                <h3>팁:</h3>
-                <ul>
-                    <li>index.html 파일을 수정하고 저장하면 몇 초에서 몇 분 안에 웹사이트에 바로 반영됩니다.</li>
-                    <li>챗지피티(ChatGPT)나 클로드(Claude) 같은 AI 챗봇에게 HTML 코드를 짜달라고 요청하면 더 멋진 디자인을 쉽게 만들 수 있습니다.</li>
-                </ul>
-            </section>
-
-            <section id="github-pages-design1">
-                <h2>17. GitHub Pages 디자인 및 고급 활용 (1/2)</h2>
-                <h3>Jekyll 테마 사용:</h3>
-                <ul>
-                    <li>GitHub Pages는 Jekyll이라는 간단한 스태틱 사이트 제네레이터를 지원합니다.</li>
-                    <li>Jekyll 테마 선택기를 사용하여 미리 만들어진 테마를 로드하여 디자인 완성도를 높일 수 있습니다.</li>
-                    <li>사이트 제목 및 설명을 _config.yml 파일을 편집하여 변경할 수 있습니다.</li>
-                </ul>
-                <h3>커스텀 도메인 연결:</h3>
-                <ul>
-                    <li>github.io 기본 도메인 대신 직접 구매한 커스텀 도메인을 연결하여 브랜딩 및 SEO(검색 엔진 최적화)에 유리하게 사용할 수 있습니다.</li>
-                    <li>리포지토리 Settings > Pages에서 커스텀 도메인을 입력하고, 도메인 등록 업체의 DNS 설정(CNAME, A 레코드 등)을 변경해야 합니다.</li>
-                    <li>루트 도메인 연결 시 www 서브 도메인도 함께 연결하는 것이 권장됩니다.</li>
-                </ul>
-            </section>
-
-            <section id="github-pages-design2">
-                <h2>18. GitHub Pages 디자인 및 고급 활용 (2/2)</h2>
-                <h3>사용자 지정 404 페이지 만들기:</h3>
-                <ul>
-                    <li>사용자가 존재하지 않는 페이지에 접근했을 때 사용자 지정 404 오류 페이지를 표시할 수 있습니다.</li>
-                    <li>사이트의 게시 원본 루트에 404.html 또는 404.md 파일을 추가합니다.</li>
-                </ul>
-                <div class="warning">
-                    ⚠️ <strong>주의:</strong> 커스텀 도메인을 사용하지 않는 프로젝트 페이지의 경우 커스텀 404 페이지는 동작하지 않습니다.
+            </div>
+        </section>
+        
+        <section id="cultural" class="text-center mb-24">
+            <h2 class="section-title">제미나이 '젬 지침'이 최적의 해결책인 이유</h2>
+            <p class="section-subtitle">크레딧 소모 문제 없이 고품질 시각화 자료를 만들고, 방대한 HTML 소스 처리 및 최신 AI 모델 활용이 가능하며, 쉬운 사용법으로 전문가급 자료 생성을 지원합니다.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="content-card text-left p-6">
+                    <div class="text-5xl mb-4">💡</div>
+                    <h3 class="text-xl font-bold mb-2">고정형 젬 지침</h3>
+                    <p class="text-gray-600">템플릿 기반으로 콘텐츠를 재구성하며, 디자인 완성도와 레이아웃 안정성이 뛰어납니다. (3가지 템플릿 포함)</p>
                 </div>
-                <h3>HTTPS 적용하여 사이트 보호:</h3>
-                <ul>
-                    <li>HTTPS는 사이트에 대한 트래픽을 스누핑 또는 변조하지 못하도록 하는 암호화 계층을 추가합니다.</li>
-                    <li>GitHub Pages 사이트에 HTTPS를 적용하여 모든 HTTP 요청을 HTTPS로 투명하게 리디렉션할 수 있습니다.</li>
-                    <li>리포지토리 Settings > Pages에서 'HTTPS 적용'을 선택합니다.</li>
-                    <li>혼합 콘텐츠 문제 해결: HTML에서 http://를 https://로 변경하여 모든 자산이 HTTPS를 통해 제공되도록 해야 합니다.</li>
-                </ul>
-            </section>
+                <div class="content-card text-left p-6">
+                    <div class="text-5xl mb-4">📐</div>
+                    <h3 class="text-xl font-bold mb-2">자유형 젬 지침</h3>
+                    <p class="text-gray-600">템플릿 없이 콘텐츠에 맞춰 새로운 구조를 동적으로 조립하며, 논리적인 형태로 표현되고 양에 따라 유연하게 확장/축소됩니다.</p>
+                </div>
+                <div class="content-card text-left p-6">
+                    <div class="text-5xl mb-4">📊</div>
+                    <h3 class="text-xl font-bold mb-2">시각화 자료 종류</h3>
+                    <p class="text-gray-600">인터랙티브 대시보드, 비주얼 인포그래픽 보고서, 원페이지 요약 보고서 등을 자유/고정형으로 만들 수 있습니다.</p>
+                </div>
+                 <div class="content-card text-left p-6">
+                    <div class="text-5xl mb-4">⚙️</div>
+                    <h3 class="text-xl font-bold mb-2">젬 지침 사용법</h3>
+                    <p class="text-gray-600">소스에 언급된 블로그에서 지침 다운로드 후 제미나이에 등록하고 실행합니다. (상세 내용은 연수자료 참고)</p>
+                </div>
+            </div>
+        </section>
 
-            <section id="github-pages-features">
-                <h2>19. GitHub Pages 추가 기능: CI/CD 및 SEO</h2>
-                <h3>CI/CD (지속적 통합/지속적 배포) 자동화: GitHub Actions:</h3>
-                <ul>
-                    <li>GitHub Actions는 빌드, 테스트, 배포 파이프라인을 자동화해 줄 수 있는 CI/CD 플랫폼입니다.</li>
-                    <li>GitHub 저장소에서 풀 리퀘스트(pull request)나 커밋을 푸시(push)할 때 등 저장소 내의 이벤트에 의해 워크플로우가 트리거됩니다.</li>
-                    <li>워크플로우들은 저장소 내의 .github/workflows 디렉토리에 YAML 파일로 정의됩니다.</li>
-                </ul>
-                <h3>검색 엔진 최적화 (SEO: Search Engine Optimization):</h3>
-                <ul>
-                    <li>Google 검색은 크롤링, 색인 생성, 검색결과 게재의 세 단계로 작동합니다.</li>
-                    <li><strong>사이트맵 (Sitemap):</strong> 웹 사이트의 페이지 구조를 검색 엔진에 알려주는 XML 형식 파일.</li>
-                    <li><strong>RSS (Really Simple Syndication):</strong> 웹 사이트 콘텐츠를 공유/구독, 백링크 증가, 빠른 색인화.</li>
-                    <li><strong>robots.txt:</strong> 웹 사이트에서 검색 엔진 크롤러에게 허용되는 URL 지정.</li>
-                    <li><strong>jekyll-seo-tag 플러그인:</strong> 페이지 제목/설명, Canonical URL 등 자동으로 생성.</li>
-                </ul>
-            </section>
+        <section id="fandom" class="text-center mb-24">
+            <h2 class="section-title">무료 웹사이트 제작: GitHub Pages</h2>
+            <p class="section-subtitle">GitHub Pages는 깃허브에서 무료로 제공하는 웹 호스팅 서비스로, 코딩을 몰라도 개인 블로그, 포트폴리오, 간단한 프로젝트 홈페이지 등을 만들 수 있습니다.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="content-card p-6">
+                    <h3 class="text-2xl font-bold mb-4">🌟 GitHub Pages란?</h3>
+                     <ul class="text-left list-disc list-inside space-y-2 text-gray-700">
+                        <li>무료 웹 호스팅 서비스로, 깃허브에 웹사이트 파일을 올려 인터넷에 공개 가능.</li>
+                        <li>개인 블로그, 포트폴리오, 간단한 프로젝트 페이지 등에 유용.</li>
+                        <li>코딩 지식이 없어도 시작 가능합니다.</li>
+                    </ul>
+                </div>
+                 <div class="content-card p-6">
+                    <h3 class="text-2xl font-bold mb-4">⚠️ 누가 사용하고 무엇을 주의할까요?</h3>
+                    <ul class="text-left list-disc list-inside space-y-2 text-gray-700">
+                        <li>조직의 Free 계정 퍼블릭 리포지토리, Pro/Team/Enterprise 계정의 퍼블릭/프라이빗 리포지토리에서 사용 가능.</li>
+                        <li>사이트의 리포지토리가 프라이빗이더라도 웹사이트는 퍼블릭으로 공개됨.</li>
+                        <li>중요한 데이터가 있는 경우, 게시 전 데이터를 제거하는 것이 좋습니다.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <section id="tech" class="text-center mb-24">
+            <h2 class="section-title">GitHub Pages 웹사이트 만들기</h2>
+            <p class="section-subtitle">GitHub 계정만 있다면, 4단계만으로 나만의 무료 웹사이트를 만들 수 있습니다.</p>
+             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="content-card text-left p-6">
+                    <h3 class="text-xl font-bold mb-2">1단계: 저장소 만들기</h3>
+                    <p class="text-gray-600">깃허브 로그인 후, 'yourusername.github.io' 형식으로 Public 저장소를 생성합니다.</p>
+                </div>
+                 <div class="content-card text-left p-6">
+                    <h3 class="text-xl font-bold mb-2">2단계: HTML 파일 업로드</h3>
+                    <p class="text-gray-600">저장소에 'index.html' 파일을 업로드하고, 기본 HTML 코드를 넣어 저장(커밋)합니다.</p>
+                </div>
+                 <div class="content-card text-left p-6">
+                    <h3 class="text-xl font-bold mb-2">3단계: Pages 활성화</h3>
+                    <p class="text-gray-600">저장소 'Settings > Pages'에서 'Deploy from a branch' 선택 후 'main' 브랜치를 저장합니다.</p>
+                </div>
+                 <div class="content-card text-left p-6">
+                    <h3 class="text-xl font-bold mb-2">4단계: 결과 확인 및 팁</h3>
+                    <p class="text-gray-600">몇 분 후 Pages 설정에 나타나는 URL로 접속하여 확인하며, index.html 수정 시 즉시 반영됩니다.</p>
+                </div>
+            </div>
+        </section>
 
-            <section id="conclusion">
-                <h2>20. 초등교사를 위한 제미나이 젬 & GitHub Pages 활용: 결론</h2>
-                <h3>AI 기반 시각화:</h3>
-                <ul>
-                    <li>제미나이 젬 지침은 크레딧 걱정 없이 전문적인 고품질 시각화 자료를 무료로 만들 수 있는 혁신적인 도구입니다.</li>
-                    <li>'고정형'과 '자유형' 두 가지 지침을 활용하여 인터랙티브 대시보드, 비주얼 인포그래픽 보고서, 원페이지 요약 보고서 등 다양한 형태의 시각화 자료를 제작할 수 있습니다.</li>
-                </ul>
-                <h3>무료 웹페이지 제작:</h3>
-                <ul>
-                    <li>GitHub Pages는 코딩 지식이 없어도 정적 웹사이트를 무료로 호스팅하고 배포할 수 있는 강력한 플랫폼입니다.</li>
-                    <li>간단한 HTML 파일 업로드만으로 개인 블로그, 학급 홈페이지, 교육 자료 공유 페이지 등을 쉽게 만들 수 있습니다.</li>
-                    <li>Jekyll 테마, 커스텀 도메인, HTTPS 적용 등 다양한 기능을 통해 전문적인 웹사이트 구축이 가능합니다.</li>
-                </ul>
-                <h3>교육 현장 활용:</h3>
-                <ul>
-                    <li>교사들이 학부모와의 소통, 학생들을 위한 교육 자료 시각화, 프로젝트 결과물 공유 등 다양한 교육 활동에 활용하여 업무 효율을 높이고 학생들의 학습 경험을 풍부하게 할 수 있습니다.</li>
-                </ul>
-                <h3>지원:</h3>
-                <p>궁금한 점이 있다면 오픈채팅방을 통해 가장 빠르게 지원받을 수 있습니다.</p>
-            </section>
-        </main>
-    </div>
+        <section id="outlook" class="text-center">
+            <h2 class="section-title">GitHub Pages: 고급 활용 & 교육 현장 결론</h2>
+            <p class="section-subtitle">더욱 전문적인 웹사이트 구축을 위한 기능과 교육 현장에서의 활용 방안을 제시합니다.</p>
+            <div class="max-w-4xl mx-auto">
+                 <div class="outlook-card space-y-2 mb-4">
+                    <button class="w-full text-left p-4 font-bold text-xl flex justify-between items-center" data-target="opportunity-content">
+                        <span>✨ 디자인 및 커스텀 도메인</span>
+                        <span class="transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div id="opportunity-content" class="outlook-content hidden px-4 pb-4 text-left text-gray-700">
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Jekyll 테마 사용으로 미리 만들어진 테마 로드 가능.</li>
+                            <li>_config.yml 파일 편집으로 사이트 제목/설명 변경 가능.</li>
+                            <li>커스텀 도메인 연결로 브랜딩 및 SEO(검색 엔진 최적화)에 유리.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="outlook-card space-y-2 mb-4">
+                    <button class="w-full text-left p-4 font-bold text-xl flex justify-between items-center" data-target="threat-content">
+                        <span>🛡️ 보안 및 자동화 (CI/CD)</span>
+                        <span class="transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div id="threat-content" class="outlook-content hidden px-4 pb-4 text-left text-gray-700">
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>사용자 지정 404 페이지 추가 가능.</li>
+                            <li>HTTPS 적용으로 사이트 트래픽 암호화 및 보안 강화.</li>
+                            <li>GitHub Actions를 통한 CI/CD(지속적 통합/지속적 배포) 자동화.</li>
+                        </ul>
+                    </div>
+                </div>
+                 <div class="outlook-card space-y-2">
+                    <button class="w-full text-left p-4 font-bold text-xl flex justify-between items-center" data-target="scenario-content">
+                        <span>👩‍🏫 교육 현장 활용 & 결론</span>
+                        <span class="transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div id="scenario-content" class="outlook-content hidden px-4 pb-4 text-left text-gray-700">
+                        <p class="font-semibold">AI 기반 시각화:</p>
+                        <p class="mb-2">제미나이 젬 지침은 크레딧 걱정 없이 전문적인 고품질 시각화 자료를 무료로 만들 수 있는 혁신적인 도구입니다.</p>
+                        <p class="font-semibold">무료 웹페이지 제작:</p>
+                        <p class="mb-2">GitHub Pages는 코딩 지식이 없어도 정적 웹사이트를 무료로 호스팅하고 배포할 수 있는 강력한 플랫폼입니다.</p>
+                        <p class="font-semibold">교육 현장 활용:</p>
+                        <p>교사들이 학부모와의 소통, 학생들을 위한 교육 자료 시각화, 프로젝트 결과물 공유 등 다양한 교육 활동에 활용하여 업무 효율을 높이고 학생들의 학습 경험을 풍부하게 할 수 있습니다.</p>
+                        <p class="mt-2 text-sm text-gray-500">지원: 궁금한 점이 있다면 오픈채팅방을 통해 가장 빠르게 지원받을 수 있습니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="text-center py-8 mt-16 bg-gray-100">
+        <p class="text-gray-500">본 인포그래픽은 'AI 문서 시각화 & 웹페이지 제작: 제미나이 젬 & GitHub Pages 활용 가이드'를 기반으로 제작되었습니다.</p>
+    </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const navLinks = document.querySelectorAll('.nav-link');
-            const sections = document.querySelectorAll('section');
+<script>
+document.addEventListener('DOMContentLoaded', () => {
 
-            const setActiveLink = () => {
-                let currentActive = null;
-                sections.forEach(section => {
-                    const rect = section.getBoundingClientRect();
-                    if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
-                        currentActive = section.id;
+    const chartColors = {
+        gradient1: (ctx) => {
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(138, 43, 226, 0.7)'); /* Vibrant Creative Primary */
+            gradient.addColorStop(1, 'rgba(255, 20, 147, 0.3)'); /* Vibrant Creative Accent */
+            return gradient;
+        },
+        purple: 'rgba(138, 43, 226, 0.8)', /* Vibrant Creative Primary */
+        purpleBorder: 'rgba(138, 43, 226, 1)',
+        pink: 'rgba(255, 20, 147, 0.8)', /* Vibrant Creative Accent */
+        pinkBorder: 'rgba(255, 20, 147, 1)',
+        lightPurple: 'rgba(160, 82, 237, 0.8)', /* Lighter shade of purple */
+        lightBlue: 'rgba(66, 165, 245, 0.8)', /* Light blue from Creative Pop, suitable secondary */
+        yellow: 'rgba(255, 206, 86, 0.8)',
+        grey: 'rgba(201, 203, 207, 0.8)',
+    };
+    
+    // Generic tooltip configuration
+    const tooltipConfig = {
+        callbacks: {
+            title: function(tooltipItems) {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                  return label.join(' ');
+                } else {
+                  return label;
+                }
+            }
+        }
+    };
+
+    // AI 시각화 도구 발전 추이 (Line Chart)
+    const albumExportsCtx = document.getElementById('albumExportsChart');
+    if(albumExportsCtx) {
+        new Chart(albumExportsCtx, {
+            type: 'line',
+            data: {
+                labels: ['2021', '2022', '2023', '2024', '2025'],
+                datasets: [{
+                    label: 'AI 시각화 도구 활용도 (%)',
+                    data: [10, 30, 60, 85, 95], /* Conceptual data */
+                    borderColor: chartColors.purpleBorder,
+                    backgroundColor: chartColors.gradient1(albumExportsCtx.getContext('2d')),
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: chartColors.purpleBorder,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: value => value + '%'
+                        }
                     }
-                });
-
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href').substring(1) === currentActive) {
-                        link.classList.add('active');
-                    }
-                });
-            };
-
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href').substring(1);
-                    const targetSection = document.getElementById(targetId);
-                    if (targetSection) {
-                        window.scrollTo({
-                            top: targetSection.offsetTop - 20, // Adjust for padding/margin
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            });
-
-            window.addEventListener('scroll', setActiveLink);
-            setActiveLink(); // Set active link on initial load
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: tooltipConfig,
+                }
+            }
         });
-    </script>
+    }
+
+    // 기존 AI 시각화 도구의 주요 한계 (Doughnut Chart)
+    const revenueSourceCtx = document.getElementById('revenueSourceChart');
+    if(revenueSourceCtx){
+        new Chart(revenueSourceCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['크레딧 소모 (70%)', '복잡한 사용법 (20%)', '제한된 기능 (10%)'], /* Conceptual data */
+                datasets: [{
+                    data: [70, 20, 10],
+                    backgroundColor: [chartColors.purple, chartColors.pink, chartColors.lightBlue], /* Use theme colors */
+                    borderColor: '#fff',
+                    borderWidth: 4,
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                         ...tooltipConfig,
+                         callbacks: {
+                            ...tooltipConfig.callbacks,
+                            label: function(context) {
+                                let label = context.label.split(' (')[0];
+                                let value = context.raw;
+                                return `${label}: ${value}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Outlook Accordion
+    const outlookButtons = document.querySelectorAll('.outlook-card button');
+    outlookButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetId = button.dataset.target;
+            const content = document.getElementById(targetId);
+            const icon = button.querySelector('span:last-child');
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        });
+    });
+
+});
+</script>
 </body>
 </html>
