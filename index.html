@@ -3,376 +3,447 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 문서 시각화 & 웹페이지 제작 가이드</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>무료 웹사이트 및 전문 시각화 자료 제작 가이드</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/subsets/Paperlogy-dynamic-subset.css" type="text/css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #0052cc;
+            --background-color: #f0f2f5;
+            --text-color: #172b4d;
+        }
+
         body {
             font-family: "Paperlogy", -apple-system, BlinkMacSystemFont, "Segoe UI",Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-            background-color: #f8f7f4; /* Vibrant Creative Background */
-            color: #1f2937; /* Vibrant Creative Text */
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
         }
-        .chart-container {
-            position: relative;
-            margin: auto;
-            height: 45vh;
-            width: 100%;
-            max-width: 900px;
-            max-height: 450px;
+
+        strong {
+            color: var(--primary-color);
         }
-        .kpi-card {
-            background: linear-gradient(145deg, #f3e8ff, #e0cffc); /* Lighter purple/pink gradient */
-            border-radius: 1rem;
-            padding: 2rem;
+
+        .sidebar {
+            width: 250px;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.5em;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: var(--text-color);
+            display: block;
+            padding: 8px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #e0e0e0;
+        }
+
+        main {
+            margin-left: 250px; /* sidebar width */
+            padding: 40px; /* Gutter */
+            flex-grow: 1;
+        }
+
+        section {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        section h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+
+        .card ul {
+            list-style: disc;
+            margin-left: 20px;
+            padding: 0;
+        }
+
+        .card li {
+            margin-bottom: 8px;
+        }
+
+        .stat-block {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
             text-align: center;
-            box-shadow: 0 10px 20px rgba(138, 43, 226, 0.1); /* Vibrant Creative Primary shadow */
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--primary-color);
+            color: #FFFFFF; /* Intelligent Contrast */
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
         }
-        .kpi-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(138, 43, 226, 0.15); /* Vibrant Creative Primary shadow */
+
+        .stat-block .icon {
+            font-size: 3em;
+            margin-bottom: 10px;
         }
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 900;
-            margin-bottom: 1rem;
-            background: linear-gradient(90deg, #8A2BE2, #FF1493); /* Vibrant Creative Primary/Accent */
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+
+        .stat-block .value {
+            font-size: 2.5em;
+            font-weight: bold;
         }
-        .section-subtitle {
-            font-size: 1.25rem;
-            color: #4b5563; /* Slightly darker text for subtitle */
-            max-width: 800px;
-            margin: 0 auto 2.5rem auto;
+
+        .stat-block .label {
+            font-size: 1em;
+            opacity: 0.8;
         }
-        .content-card {
-             background-color: #f9fafb; /* Light gray background for content cards */
-             border: 1px solid #e5e7eb; /* Subtle border */
-             border-radius: 1rem;
-             padding: 1.5rem;
+
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-top: 15px;
         }
-        /* New style for outlook accordion buttons */
-        .outlook-card button {
-            background-color: #ffffff; /* White background for buttons */
-            color: #8A2BE2; /* Vibrant Creative Primary for text */
-            border: 1px solid #e5e7eb; /* Subtle border */
-            border-radius: 0.75rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            margin-bottom: 0.5rem;
+
+        .progress-bar {
+            width: 0%; /* JS will set this */
+            height: 25px;
+            background-color: var(--primary-color);
+            border-radius: 5px;
+            text-align: center;
+            color: #FFFFFF; /* Intelligent Contrast */
+            line-height: 25px;
+            font-weight: bold;
+            transition: width 1s ease-in-out;
         }
-        .outlook-card button:hover {
-            background-color: #f3e8ff; /* Lighter purple on hover */
-            color: #8A2BE2;
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
-        .outlook-card .outlook-content {
-            background-color: #fdfbff; /* Very light purple for content */
-            border: 1px solid #f3e8ff; /* Lighter purple border */
-            border-radius: 0.75rem;
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: var(--primary-color);
+            color: #FFFFFF; /* Intelligent Contrast */
+            font-weight: bold;
+        }
+
+        .bar-chart {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .bar-chart .bar-item {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .bar-chart .label {
+            flex: 0 0 100px;
+            font-size: 0.9em;
+            color: var(--text-color);
+        }
+
+        .bar-chart .bar-wrapper {
+            flex-grow: 1;
+            background-color: #e0e0e0;
+            height: 25px;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-chart .bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%; /* JS will set this */
+            transition: width 1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 5px;
+            box-sizing: border-box;
+        }
+
+        .bar-chart .value {
+            color: #FFFFFF; /* Intelligent Contrast */
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .key-takeaways-box, .recommendation-block {
+            background-color: #e6f2ff; /* Light blue for emphasis */
+            border-left: 5px solid var(--primary-color);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .key-takeaways-box h3, .recommendation-block h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        .key-takeaways-box ul, .recommendation-block ul {
+            list-style: disc;
+            margin-left: 20px;
+            padding: 0;
         }
     </style>
 </head>
-<body class="antialiased">
+<body>
+    <aside class="sidebar">
+        <h2>가이드 목차</h2>
+        <nav>
+            <ul>
+                <li><a href="#intro">소개</a></li>
+                <li><a href="#github-pages">무료 웹사이트 만들기: GitHub Pages</a></li>
+                <li><a href="#gemini-gem">전문적인 시각화 자료 만들기: 제미나이(Gemini) '젬 지침'</a></li>
+                <li><a href="#gem-types">두 가지 젬 지침 유형: '고정형' vs '자유형'</a></li>
+                <li><a href="#conclusion">결론</a></li>
+            </ul>
+        </nav>
+    </aside>
 
-    <header class="bg-gray-50 py-20 text-center">
-        <div class="container mx-auto px-6">
-            <h1 class="text-5xl md:text-7xl font-black text-gray-900 leading-tight">AI 문서 시각화 & 웹페이지 제작 가이드</h1>
-            <p class="text-xl text-gray-600 mt-4 max-w-3xl mx-auto">초등교사 대상 연수: 코딩 없이 만드는 전문가급 웹 콘텐츠!</p>
-        </div>
-    </header>
-
-    <main class="container mx-auto px-6 py-16">
-
-        <section id="economic" class="text-center mb-24">
-            <h2 class="section-title">왜 지금 AI 기반 문서 시각화가 중요한가요?</h2>
-            <p class="section-subtitle">복잡한 정보 속에서 핵심을 빠르게 파악하고, 비전문가도 쉽게 전문적인 결과물을 만들며, 효과적인 커뮤니케이션을 가능하게 합니다.</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                <div class="kpi-card">
-                    <h3 class="text-xl font-bold text-purple-800">효율적 이해</h3>
-                    <p class="text-3xl font-extrabold text-gray-900 mt-2">방대한 데이터 한눈에 파악</p>
-                </div>
-                <div class="kpi-card">
-                    <h3 class="text-xl font-bold text-purple-800">접근성 향상</h3>
-                    <p class="text-3xl font-extrabold text-gray-900 mt-2">비전문가도 전문적 결과물</p>
-                </div>
-                 <div class="kpi-card">
-                    <h3 class="text-xl font-bold text-purple-800">커뮤니케이션 강화</h3>
-                    <p class="text-3xl font-extrabold text-gray-900 mt-2">복잡한 내용 시각적 전달</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
-                <div class="lg:col-span-3 content-card p-6">
-                    <h3 class="text-2xl font-bold mb-4">AI 시각화 도구 발전 추이 (예시)</h3>
-                    <p class="text-gray-600 mb-6">복잡한 소프트웨어 없이 자연어 명령만으로 고품질 시각화 자료를 손쉽게 생성할 수 있게 되면서 활용도가 급증하고 있습니다.</p>
-                    <div class="chart-container"><canvas id="albumExportsChart"></canvas></div>
-                </div>
-                <div class="lg:col-span-2 content-card p-6">
-                    <h3 class="text-2xl font-bold mb-4">기존 AI 시각화 도구의 주요 한계 (예시)</h3>
-                    <p class="text-gray-600 mb-6">대부분의 AI 시각화 도구들은 '크레딧'이라는 비용을 소모해야 하는 치명적인 단점을 가지고 있습니다.</p>
-                    <div class="chart-container"><canvas id="revenueSourceChart"></canvas></div>
-                </div>
-            </div>
-        </section>
-        
-        <section id="cultural" class="text-center mb-24">
-            <h2 class="section-title">제미나이 '젬 지침'이 최적의 해결책인 이유</h2>
-            <p class="section-subtitle">크레딧 소모 문제 없이 고품질 시각화 자료를 만들고, 방대한 HTML 소스 처리 및 최신 AI 모델 활용이 가능하며, 쉬운 사용법으로 전문가급 자료 생성을 지원합니다.</p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="content-card text-left p-6">
-                    <div class="text-5xl mb-4">💡</div>
-                    <h3 class="text-xl font-bold mb-2">고정형 젬 지침</h3>
-                    <p class="text-gray-600">템플릿 기반으로 콘텐츠를 재구성하며, 디자인 완성도와 레이아웃 안정성이 뛰어납니다. (3가지 템플릿 포함)</p>
-                </div>
-                <div class="content-card text-left p-6">
-                    <div class="text-5xl mb-4">📐</div>
-                    <h3 class="text-xl font-bold mb-2">자유형 젬 지침</h3>
-                    <p class="text-gray-600">템플릿 없이 콘텐츠에 맞춰 새로운 구조를 동적으로 조립하며, 논리적인 형태로 표현되고 양에 따라 유연하게 확장/축소됩니다.</p>
-                </div>
-                <div class="content-card text-left p-6">
-                    <div class="text-5xl mb-4">📊</div>
-                    <h3 class="text-xl font-bold mb-2">시각화 자료 종류</h3>
-                    <p class="text-gray-600">인터랙티브 대시보드, 비주얼 인포그래픽 보고서, 원페이지 요약 보고서 등을 자유/고정형으로 만들 수 있습니다.</p>
-                </div>
-                 <div class="content-card text-left p-6">
-                    <div class="text-5xl mb-4">⚙️</div>
-                    <h3 class="text-xl font-bold mb-2">젬 지침 사용법</h3>
-                    <p class="text-gray-600">소스에 언급된 블로그에서 지침 다운로드 후 제미나이에 등록하고 실행합니다. (상세 내용은 연수자료 참고)</p>
-                </div>
-            </div>
+    <main>
+        <section id="intro">
+            <h2>소개</h2>
+            <p>비용 걱정 없이 나만의 웹사이트를 만들고, 전문적인 시각화 자료를 제작하고 싶은가? 이 가이드에서는 GitHub Pages와 제미나이(Gemini) <strong>'젬 지침'</strong>을 활용하여 무료로 웹사이트를 만들고 콘텐츠를 시각화하는 방법을 쉽고 자세하게 설명함.</p>
         </section>
 
-        <section id="fandom" class="text-center mb-24">
-            <h2 class="section-title">무료 웹사이트 제작: GitHub Pages</h2>
-            <p class="section-subtitle">GitHub Pages는 깃허브에서 무료로 제공하는 웹 호스팅 서비스로, 코딩을 몰라도 개인 블로그, 포트폴리오, 간단한 프로젝트 홈페이지 등을 만들 수 있습니다.</p>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="content-card p-6">
-                    <h3 class="text-2xl font-bold mb-4">🌟 GitHub Pages란?</h3>
-                     <ul class="text-left list-disc list-inside space-y-2 text-gray-700">
-                        <li>무료 웹 호스팅 서비스로, 깃허브에 웹사이트 파일을 올려 인터넷에 공개 가능.</li>
-                        <li>개인 블로그, 포트폴리오, 간단한 프로젝트 페이지 등에 유용.</li>
-                        <li>코딩 지식이 없어도 시작 가능합니다.</li>
+        <section id="github-pages">
+            <h2>무료 웹사이트 만들기: GitHub Pages</h2>
+            <p>GitHub Pages는 깃허브에서 무료로 제공하는 웹 호스팅 서비스임. 여러분이 만든 웹사이트 파일을 인터넷에 올려 다른 사람들이 볼 수 있도록 하며, 개인 블로그, 포트폴리오, 간단한 프로젝트 홈페이지 등을 만들 때 매우 유용함. 코딩을 잘 몰라도 시작할 수 있음.</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>💡 누가 GitHub Pages를 사용할 수 있나?</h3>
+                    <ul>
+                        <li>GitHub Free 계정을 가진 조직의 공개 리포지토리 및 GitHub Pro, GitHub Team, GitHub Enterprise Cloud, GitHub Enterprise Server 계정을 가진 조직의 공개 및 비공개 리포지토리에서 사용 가능함.</li>
                     </ul>
                 </div>
-                 <div class="content-card p-6">
-                    <h3 class="text-2xl font-bold mb-4">⚠️ 누가 사용하고 무엇을 주의할까요?</h3>
-                    <ul class="text-left list-disc list-inside space-y-2 text-gray-700">
-                        <li>조직의 Free 계정 퍼블릭 리포지토리, Pro/Team/Enterprise 계정의 퍼블릭/프라이빗 리포지토리에서 사용 가능.</li>
-                        <li>사이트의 리포지토리가 프라이빗이더라도 웹사이트는 퍼블릭으로 공개됨.</li>
-                        <li>중요한 데이터가 있는 경우, 게시 전 데이터를 제거하는 것이 좋습니다.</li>
+                <div class="card">
+                    <h3>준비물</h3>
+                    <ul>
+                        <li>깃허브(GitHub) 계정</li>
+                        <li>아주 간단한 HTML 파일 (초보자도 쉽게 만들 수 있음)</li>
                     </ul>
                 </div>
             </div>
+
+            <div class="card">
+                <h3>만드는 4단계</h3>
+                <ol>
+                    <li><strong>새로운 저장소(Repository) 만들기:</strong>
+                        <ul>
+                            <li>깃허브에 로그인한 후, 새로운 저장소를 만듦.</li>
+                            <li>저장소 이름은 여러분의 깃허브 사용자 이름 + .github.io 형식으로 지어주어야 함 (예: yourusername.github.io). 이렇게 해야 사용자 페이지가 됨.</li>
+                            <li>Public으로 설정하고 README.md 파일도 추가하여 저장소를 만듦.</li>
+                        </ul>
+                    </li>
+                    <li><strong>HTML 파일 업로드하기:</strong>
+                        <ul>
+                            <li>방금 만든 저장소로 들어가서 Add file > Upload files를 클릭함.</li>
+                            <li>index.html이라는 이름의 파일을 만들거나 업로드해야 함. 이 파일이 웹사이트의 첫 화면이 됨.</li>
+                            <li>예시 HTML 코드를 복사하여 파일에 넣고 저장(커밋)함.</li>
+                        </ul>
+                    </li>
+                    <li><strong>GitHub Pages 활성화하기:</strong>
+                        <ul>
+                            <li>저장소 메인 화면에서 Settings (설정) 탭으로 이동함.</li>
+                            <li>왼쪽 메뉴에서 Pages를 클릭함.</li>
+                            <li>"Build and deployment" 섹션의 "Source"에서 <strong>Deploy from a branch (브랜치에서 배포)</strong>를 선택함.</li>
+                            <li>"Branch"에서 main 브랜치를 선택하고 Save (저장) 버튼을 누름.</li>
+                        </ul>
+                    </li>
+                    <li><strong>결과 확인하기:</strong>
+                        <ul>
+                            <li>몇 초에서 몇 분 후 (최대 10분 정도 걸릴 수 있음), Pages 설정 화면에 <strong>여러분의 웹사이트 주소 (URL)</strong>가 나타남.</li>
+                            <li>이 URL로 접속하면 여러분만의 무료 웹사이트를 확인할 수 있음.</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h3>팁</h3>
+                <ul>
+                    <li>index.html 파일을 수정하고 저장하면 몇 초에서 몇 분 안에 웹사이트에 바로 반영됨.</li>
+                    <li>ChatGPT나 Claude 같은 AI 챗봇에게 HTML 코드를 짜달라고 요청하면 더 멋진 디자인을 쉽게 만들 수 있음.</li>
+                    <li><strong>Jekyll 테마 사용:</strong> GitHub Pages는 Jekyll이라는 정적 사이트 생성기를 지원하며, 미리 만들어진 테마를 로드하여 디자인을 향상시킬 수 있음. _config.yml 파일을 편집하여 사이트 제목 및 설명을 변경할 수 있음.</li>
+                    <li><strong>커스텀 도메인 연결:</strong> github.io 기본 도메인 대신 직접 구매한 커스텀 도메인을 연결하여 브랜딩 및 SEO에 유리하게 사용할 수 있음. 리포지토리 Settings > Pages에서 커스텀 도메인을 입력하고, 도메인 등록 업체의 DNS 설정(CNAME, A 레코드 등)을 변경해야 함. 루트 도메인 연결 시 www 서브 도메인도 함께 연결하는 것이 권장됨.</li>
+                    <li><strong>사용자 지정 404 페이지 만들기:</strong> 사용자가 존재하지 않는 페이지에 액세스할 때 사용자 지정 404 오류 페이지를 표시할 수 있음. 사이트의 게시 원본 루트에 404.html 또는 404.md 파일을 추가하면 됨.</li>
+                    <li><strong>HTTPS 적용하여 사이트 보호:</strong> HTTPS는 사이트 트래픽을 암호화하여 스누핑이나 변조를 방지함. 리포지토리 Settings > Pages에서 'HTTPS 적용'을 선택할 수 있음. 혼합 콘텐츠 문제가 발생하면 HTML에서 http://를 https://로 변경하여 모든 자산이 HTTPS를 통해 제공되도록 해야 함.</li>
+                    <li><strong>CI/CD (지속적 통합/지속적 배포) 자동화:</strong> GitHub Actions는 빌드, 테스트, 배포 파이프라인을 자동화할 수 있는 CI/CD 플랫폼임. 저장소 내의 이벤트에 의해 워크플로우가 트리거되며, .github/workflows 디렉토리에 YAML 파일로 정의됨.</li>
+                    <li><strong>검색 엔진 최적화 (SEO):</strong> Google 검색은 크롤링, 색인 생성, 검색결과 게재의 세 단계로 작동함. 사이트맵, RSS, robots.txt 등의 요소를 활용하여 SEO를 개선할 수 있음. jekyll-seo-tag 및 jekyll-sitemap 플러그인도 유용함.</li>
+                </ul>
+            </div>
         </section>
-        
-        <section id="tech" class="text-center mb-24">
-            <h2 class="section-title">GitHub Pages 웹사이트 만들기</h2>
-            <p class="section-subtitle">GitHub 계정만 있다면, 4단계만으로 나만의 무료 웹사이트를 만들 수 있습니다.</p>
-             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="content-card text-left p-6">
-                    <h3 class="text-xl font-bold mb-2">1단계: 저장소 만들기</h3>
-                    <p class="text-gray-600">깃허브 로그인 후, 'yourusername.github.io' 형식으로 Public 저장소를 생성합니다.</p>
+
+        <section id="gemini-gem">
+            <h2>전문적인 시각화 자료 만들기: 제미나이(Gemini) '젬 지침'</h2>
+            <p>요즘 AI 도구들이 문서를 시각화하는 능력이 정말 좋아졌지만, 대부분 <strong>'크레딧'</strong>이라는 비용을 사용해야 하는 단점이 있음. 하지만 제미나이의 <strong>'젬 지침'</strong>을 활용하면 크레딧 소모 없이 전문적인 시각화 자료를 무료로 만들 수 있음.</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>왜 제미나이 젬 지침이 좋을까?</h3>
+                    <ul>
+                        <li><strong>무료:</strong> 젠스파크(ZenSpark) 같은 다른 좋은 도구들은 비용이 발생하지만, 제미나이는 무료로 이런 고급 기능을 사용할 수 있음.</li>
+                        <li><strong>방대한 데이터 처리:</strong> 제미나이는 무료 플랜에서도 많은 HTML 소스(웹사이트를 만드는 코드)를 처리할 수 있는 뛰어난 컨텍스트 용량을 지원함. 콘텐츠 시각화의 기본 원리는 시각화된 요소를 HTML로 구현하는 것이기 때문에 이는 매우 중요함.</li>
+                        <li><strong>최신 AI 모델 활용:</strong> 항상 최신 AI 모델을 사용할 수 있어서 더 나은 결과물을 기대할 수 있음.</li>
+                        <li><strong>쉬운 접근성:</strong> 예전에는 디자이너나 데이터 분석 전문가만 만들 수 있었던 전문적인 시각화 자료를 AI의 도움으로 누구나 쉽게 만들 수 있게 해줌. 복잡한 소프트웨어를 배울 필요 없이 자연어로 명령만 하면 됨.</li>
+                        <li><strong>원본 지침 제공:</strong> 사용자가 직접 지침을 수정하고 커스터마이징할 수 있도록 완전한 원본 지침(GMG 지침)을 제공함. 이는 AI의 확률적 추론 및 오해석으로 인한 한계를 극복하고 최적의 결과를 얻기 위함임.</li>
+                    </ul>
                 </div>
-                 <div class="content-card text-left p-6">
-                    <h3 class="text-xl font-bold mb-2">2단계: HTML 파일 업로드</h3>
-                    <p class="text-gray-600">저장소에 'index.html' 파일을 업로드하고, 기본 HTML 코드를 넣어 저장(커밋)합니다.</p>
-                </div>
-                 <div class="content-card text-left p-6">
-                    <h3 class="text-xl font-bold mb-2">3단계: Pages 활성화</h3>
-                    <p class="text-gray-600">저장소 'Settings > Pages'에서 'Deploy from a branch' 선택 후 'main' 브랜치를 저장합니다.</p>
-                </div>
-                 <div class="content-card text-left p-6">
-                    <h3 class="text-xl font-bold mb-2">4단계: 결과 확인 및 팁</h3>
-                    <p class="text-gray-600">몇 분 후 Pages 설정에 나타나는 URL로 접속하여 확인하며, index.html 수정 시 즉시 반영됩니다.</p>
+                <div class="card">
+                    <h3>무엇을 만들 수 있나?</h3>
+                    <ul>
+                        <li><strong>인터랙티브 대시보드:</strong> 정보를 한눈에 볼 수 있는 웹 페이지 형태의 자료.</li>
+                        <li><strong>비주얼 인포그래픽 보고서:</strong> 그림과 핵심 내용을 강조한 시각적인 보고서.</li>
+                        <li><strong>원페이지 요약 보고서:</strong> 핵심 내용만 간결하게 정리한 한 페이지짜리 보고서.</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
-        <section id="outlook" class="text-center">
-            <h2 class="section-title">GitHub Pages: 고급 활용 & 교육 현장 결론</h2>
-            <p class="section-subtitle">더욱 전문적인 웹사이트 구축을 위한 기능과 교육 현장에서의 활용 방안을 제시합니다.</p>
-            <div class="max-w-4xl mx-auto">
-                 <div class="outlook-card space-y-2 mb-4">
-                    <button class="w-full text-left p-4 font-bold text-xl flex justify-between items-center" data-target="opportunity-content">
-                        <span>✨ 디자인 및 커스텀 도메인</span>
-                        <span class="transform transition-transform duration-300">▼</span>
-                    </button>
-                    <div id="opportunity-content" class="outlook-content hidden px-4 pb-4 text-left text-gray-700">
-                        <ul class="list-disc list-inside space-y-1">
-                            <li>Jekyll 테마 사용으로 미리 만들어진 테마 로드 가능.</li>
-                            <li>_config.yml 파일 편집으로 사이트 제목/설명 변경 가능.</li>
-                            <li>커스텀 도메인 연결로 브랜딩 및 SEO(검색 엔진 최적화)에 유리.</li>
-                        </ul>
-                    </div>
+        <section id="gem-types">
+            <h2>두 가지 젬 지침 유형: '고정형' vs '자유형'</h2>
+            <p>두 지침은 사용자 콘텐츠의 웹 시각화라는 동일한 목표를 가지고 있지만, 철학과 작동 방식, 결과물의 특성에서 근본적인 차이를 보임.</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>고정형 (Fixed Type) 지침</h3>
+                    <ul>
+                        <li><strong>역할:</strong> 인테리어 디자이너나 출판 편집자와 같음.</li>
+                        <li><strong>템플릿 기반:</strong> 이미 검증된 견본, 즉 템플릿을 먼저 선택하고 콘텐츠를 그 견본에 정해진 틀에 맞게 재구성하고 채워 넣는 방식으로 작동함 (총 3개의 템플릿 포함).</li>
+                        <li><strong>콘텐츠 처리:</strong> 소스에서 필요한 텍스트와 데이터를 추출하여 템플릿에 고정된 공간에 맞추기 위해 텍스트를 공격적으로 요약하고 재가공함.</li>
+                        <li><strong>결과물 특징:</strong>
+                            <ul>
+                                <li>정형화된 대시보드 레이아웃을 채택함.</li>
+                                <li>검증된 템플릿 기반이므로 디자인적 완성도나 레이아웃 안정성이 뛰어남.</li>
+                                <li>결과물의 품질과 형태가 항상 보장되므로 안정적임.</li>
+                                <li>다만, 고정된 틀에 콘텐츠를 맞추는 과정에서 일부 정보가 요약되거나 누락될 수 있음.</li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
-                <div class="outlook-card space-y-2 mb-4">
-                    <button class="w-full text-left p-4 font-bold text-xl flex justify-between items-center" data-target="threat-content">
-                        <span>🛡️ 보안 및 자동화 (CI/CD)</span>
-                        <span class="transform transition-transform duration-300">▼</span>
-                    </button>
-                    <div id="threat-content" class="outlook-content hidden px-4 pb-4 text-left text-gray-700">
-                        <ul class="list-disc list-inside space-y-1">
-                            <li>사용자 지정 404 페이지 추가 가능.</li>
-                            <li>HTTPS 적용으로 사이트 트래픽 암호화 및 보안 강화.</li>
-                            <li>GitHub Actions를 통한 CI/CD(지속적 통합/지속적 배포) 자동화.</li>
-                        </ul>
-                    </div>
-                </div>
-                 <div class="outlook-card space-y-2">
-                    <button class="w-full text-left p-4 font-bold text-xl flex justify-between items-center" data-target="scenario-content">
-                        <span>👩‍🏫 교육 현장 활용 & 결론</span>
-                        <span class="transform transition-transform duration-300">▼</span>
-                    </button>
-                    <div id="scenario-content" class="outlook-content hidden px-4 pb-4 text-left text-gray-700">
-                        <p class="font-semibold">AI 기반 시각화:</p>
-                        <p class="mb-2">제미나이 젬 지침은 크레딧 걱정 없이 전문적인 고품질 시각화 자료를 무료로 만들 수 있는 혁신적인 도구입니다.</p>
-                        <p class="font-semibold">무료 웹페이지 제작:</p>
-                        <p class="mb-2">GitHub Pages는 코딩 지식이 없어도 정적 웹사이트를 무료로 호스팅하고 배포할 수 있는 강력한 플랫폼입니다.</p>
-                        <p class="font-semibold">교육 현장 활용:</p>
-                        <p>교사들이 학부모와의 소통, 학생들을 위한 교육 자료 시각화, 프로젝트 결과물 공유 등 다양한 교육 활동에 활용하여 업무 효율을 높이고 학생들의 학습 경험을 풍부하게 할 수 있습니다.</p>
-                        <p class="mt-2 text-sm text-gray-500">지원: 궁금한 점이 있다면 오픈채팅방을 통해 가장 빠르게 지원받을 수 있습니다.</p>
-                    </div>
+                <div class="card">
+                    <h3>자유형 (Free Type) 지침</h3>
+                    <ul>
+                        <li><strong>역할:</strong> 건축가나 엔지니어와 같음.</li>
+                        <li><strong>템플릿 없음:</strong> 템플릿이 없음.</li>
+                        <li><strong>콘텐츠 처리:</strong> 의미 단위로 분석하여 모든 서술형 문장을 보고서 스타일의 개조식으로 변환함.</li>
+                        <li><strong>결과물 특징:</strong>
+                            <ul>
+                                <li>매번 다른 형식의 대시보드가 생성될 수 있음.</li>
+                                <li>콘텐츠의 양과 구조에 따라 컴포넌트의 수와 배치가 달라져서 결과물의 최종 형태가 가변적임.</li>
+                                <li>가장 논리적인 형태로 표현되며 콘텐츠의 양이나 복잡도에 따라 자연스럽게 확장되거나 축소되는 특징이 있음.</li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
+
+            <div class="card">
+                <h3>어떻게 사용하나?</h3>
+                <ul>
+                    <li><strong>지침 다운로드:</strong> 소스에 언급된 블로그 주소(영상 설명란과 고정 댓글 참고)에서 <strong>'젬 지침'</strong>을 다운로드하고 압축을 풂.</li>
+                    <li><strong>지침 설치:</strong>
+                        <ul>
+                            <li><strong>고정형:</strong> 젬 이름을 '고정형' 등으로 입력한 후, 다운받은 '콘텐츠고정형' 지침을 붙여 넣고, 함께 있는 3가지 템플릿도 추가해서 설치함.</li>
+                            <li><strong>자유형:</strong> 이름을 입력하고 '콘텐츠 자유형' 지침을 열어 내용을 붙여 넣기 함. 이때, 젬 자체적인 문제로 이전 템플릿이 포함되어 있다면 반드시 삭제해야 함.</li>
+                        </ul>
+                    </li>
+                    <li><strong>실행:</strong> 제미나이에서 해당 젬을 실행하고 '시작' 또는 '고'를 입력한 다음, 원하는 시각화 종류의 번호를 선택하거나 시각화할 텍스트, 문서, URL 등을 입력하면 됨.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>활용 팁 및 한계</h3>
+                <ul>
+                    <li>제미나이 젬 지침이 HTML 코드를 포함한 시각화 자료를 만들어주므로, 이 결과물을 GitHub Pages에 업로드하여 여러분의 무료 웹사이트에 전문적인 시각화 콘텐츠를 추가할 수 있음.</li>
+                    <li>젬 지침이 매우 정교하게 설계되었음에도 불구하고, 인간 언어와 맥락의 본질적 모호성 및 각 젬 페르소나의 구조적 한계로 인해 매번 완벽한 구조의 시각화 자료가 나오는 것은 불가능함.</li>
+                    <li>원페이지 요약 보고서의 경우, 소스 내용의 분량에 따라 콘텐츠가 잘리는 문제가 발생할 수 있음. 현재는 젬 자체적인 문제이며, 이 경우 직접 코드를 편집하여 조정해야 함.</li>
+                    <li>궁금한 점이 있다면 오픈채팅방을 통해 가장 빠르게 지원받을 수 있음.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="conclusion">
+            <h2>결론</h2>
+            <p>GitHub Pages는 여러분의 웹사이트를 무료로 호스팅할 수 있게 해주고, 제미나이 젬 지침은 여러분의 콘텐츠를 무료로 전문적인 시각화 자료로 만들어주는 도구임. 이 두 가지를 함께 활용하면 비용 걱정 없이 여러분만의 멋진 웹사이트와 전문적인 시각화 콘텐츠를 만들 수 있을 것임.</p>
         </section>
     </main>
-    
-    <footer class="text-center py-8 mt-16 bg-gray-100">
-        <p class="text-gray-500">본 인포그래픽은 'AI 문서 시각화 & 웹페이지 제작: 제미나이 젬 & GitHub Pages 활용 가이드'를 기반으로 제작되었습니다.</p>
-    </footer>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-
-    const chartColors = {
-        gradient1: (ctx) => {
-            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, 'rgba(138, 43, 226, 0.7)'); /* Vibrant Creative Primary */
-            gradient.addColorStop(1, 'rgba(255, 20, 147, 0.3)'); /* Vibrant Creative Accent */
-            return gradient;
-        },
-        purple: 'rgba(138, 43, 226, 0.8)', /* Vibrant Creative Primary */
-        purpleBorder: 'rgba(138, 43, 226, 1)',
-        pink: 'rgba(255, 20, 147, 0.8)', /* Vibrant Creative Accent */
-        pinkBorder: 'rgba(255, 20, 147, 1)',
-        lightPurple: 'rgba(160, 82, 237, 0.8)', /* Lighter shade of purple */
-        lightBlue: 'rgba(66, 165, 245, 0.8)', /* Light blue from Creative Pop, suitable secondary */
-        yellow: 'rgba(255, 206, 86, 0.8)',
-        grey: 'rgba(201, 203, 207, 0.8)',
-    };
-    
-    // Generic tooltip configuration
-    const tooltipConfig = {
-        callbacks: {
-            title: function(tooltipItems) {
-                const item = tooltipItems[0];
-                let label = item.chart.data.labels[item.dataIndex];
-                if (Array.isArray(label)) {
-                  return label.join(' ');
-                } else {
-                  return label;
-                }
-            }
-        }
-    };
-
-    // AI 시각화 도구 발전 추이 (Line Chart)
-    const albumExportsCtx = document.getElementById('albumExportsChart');
-    if(albumExportsCtx) {
-        new Chart(albumExportsCtx, {
-            type: 'line',
-            data: {
-                labels: ['2021', '2022', '2023', '2024', '2025'],
-                datasets: [{
-                    label: 'AI 시각화 도구 활용도 (%)',
-                    data: [10, 30, 60, 85, 95], /* Conceptual data */
-                    borderColor: chartColors.purpleBorder,
-                    backgroundColor: chartColors.gradient1(albumExportsCtx.getContext('2d')),
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: chartColors.purpleBorder,
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: {
-                            callback: value => value + '%'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: tooltipConfig,
-                }
-            }
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Placeholder for any interactive elements, e.g., progress bars, charts
+            // No specific data points found for progress bars or bar charts in the provided text.
+            // If there were percentage or comparative numerical data, JS would be added here.
         });
-    }
-
-    // 기존 AI 시각화 도구의 주요 한계 (Doughnut Chart)
-    const revenueSourceCtx = document.getElementById('revenueSourceChart');
-    if(revenueSourceCtx){
-        new Chart(revenueSourceCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['크레딧 소모 (70%)', '복잡한 사용법 (20%)', '제한된 기능 (10%)'], /* Conceptual data */
-                datasets: [{
-                    data: [70, 20, 10],
-                    backgroundColor: [chartColors.purple, chartColors.pink, chartColors.lightBlue], /* Use theme colors */
-                    borderColor: '#fff',
-                    borderWidth: 4,
-                    hoverOffset: 15
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '70%',
-                plugins: {
-                    legend: { position: 'bottom' },
-                    tooltip: {
-                         ...tooltipConfig,
-                         callbacks: {
-                            ...tooltipConfig.callbacks,
-                            label: function(context) {
-                                let label = context.label.split(' (')[0];
-                                let value = context.raw;
-                                return `${label}: ${value}%`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-    
-    // Outlook Accordion
-    const outlookButtons = document.querySelectorAll('.outlook-card button');
-    outlookButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const targetId = button.dataset.target;
-            const content = document.getElementById(targetId);
-            const icon = button.querySelector('span:last-child');
-            
-            if (content.classList.contains('hidden')) {
-                content.classList.remove('hidden');
-                icon.classList.add('rotate-180');
-            } else {
-                content.classList.add('hidden');
-                icon.classList.remove('rotate-180');
-            }
-        });
-    });
-
-});
-</script>
+    </script>
 </body>
 </html>
